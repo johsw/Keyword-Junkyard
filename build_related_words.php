@@ -25,8 +25,10 @@
       $articles_sql = "SELECT n.nid, nr.title, nr.body, cfu.field_underrubrik_value  FROM `node` AS n
       JOIN `node_revisions` AS nr ON n.vid = nr.vid
        JOIN content_field_underrubrik AS cfu ON cfu.vid = n.vid 
-      WHERE n.type IN ('avisartikel', 'ritzau_telegram') AND nr.title LIKE '%". $row->name ."%'";
+       JOIN term_node AS tn ON tn.nid = n.nid AND tn.tid = ". $row->tid. "
+      WHERE n.type IN ('avisartikel')";
       
+
     $articles_result = mysql_query($articles_sql);
     $doc_count = 0;
     $word_count = 0;
@@ -72,7 +74,7 @@
                 
                 if($compare_result) {
                   $compare_row = mysql_fetch_object($compare_result);
-                  if($compare_row && isset($doc_frequency[$compare_row->word]) && $doc_frequency[$compare_row->word] > 1) {
+                  if($compare_row && isset($doc_frequency[$compare_row->word]) && $doc_frequency[$compare_row->word] > 2) {
                     $comp[$compare_row->word] = $compare_row->diff;
                   
                   }

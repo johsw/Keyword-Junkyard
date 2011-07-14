@@ -14,7 +14,7 @@
    mb_internal_encoding("UTF-8");
    
     $query = '
-      SELECT tid, name FROM term_data WHERE vid = 16
+      SELECT tid, name FROM term_data WHERE vid = 16 ORDER BY rand() LIMIT 0, 10
     ';
    
    $result = mysql_query($query);
@@ -32,6 +32,7 @@
     $word_count = 0;
     $overall_frequency = array();
     $doc_frequency = array();
+    if($articles_result){
        while ($articles_row = mysql_fetch_object($articles_result)) {
    
                   $text = strip_tags($articles_row->title.' '.$articles_row->field_underrubrik_value. ' '.$articles_row->body);
@@ -72,7 +73,7 @@
                 
                 if($compare_result) {
                   $compare_row = mysql_fetch_object($compare_result);
-                  if($compare_row && isset($doc_frequency[$compare_row->word]) && $doc_frequency[$compare_row->word] > 1) {
+                  if($compare_row && isset($doc_frequency[$compare_row->word]) && $doc_frequency[$compare_row->word] > $doc_count / 5) {
                     $comp[$compare_row->word] = $compare_row->diff;
                   
                   }
@@ -82,8 +83,9 @@
               //arsort($comp);
               print '<pre>'.utf8_decode(print_r($comp,1)). '</pre>';
              $supercounter++;
-             if($supercounter > 50){ exit; }
+             //if($supercounter > 10){ exit; }
    }
+ }
    
    $end = time();
    
